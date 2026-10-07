@@ -23,3 +23,10 @@ The trade-off made here is simplicity over generality. The library handles finit
 ## The awkward edge
 
 The error estimate (`|fine - coarse|` on each subinterval) is a heuristic, not a bound. For integrands that are merely continuous but not differentiable — `abs(x - c)` is the canonical case — Simpson's rule converges slowly and the estimator keeps asking for more subdivision. Rather than silently returning a wrong answer, the routine raises `AdaptiveSimpsonError` when it hits `max_depth`. If you have a genuinely nasty integrand, raise `max_depth`; if it is singular, transform variables first and use this library on the smooth result.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
